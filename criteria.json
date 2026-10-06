@@ -1,0 +1,50 @@
+{
+  "titles": [
+    "AI Engineer",
+    "GenAI Engineer",
+    "Machine Learning Engineer",
+    "Software Engineer",
+    "Backend Engineer",
+    "Python Engineer",
+    "AI/ML Engineer",
+    "Senior Software Engineer"
+  ],
+  "locations": [],
+  "country": "India",
+  "work_modes": [
+    "remote"
+  ],
+  "min_exp": 2.0,
+  "max_exp": 5.0,
+  "min_salary_lpa": 45.0,
+  "include_unknown_salary": true,
+  "include_keywords": [
+    "Python",
+    "LLM",
+    "GenAI",
+    "RAG",
+    "LangChain",
+    "Django",
+    "REST API",
+    "Machine Learning",
+    "AI"
+  ],
+  "exclude_keywords": [
+    "Intern",
+    "Internship",
+    "Trainee",
+    "Junior",
+    "Fresher"
+  ],
+  "exclude_companies": [
+    "OpenText"
+  ],
+  "max_age_days": 14,
+  "min_score": 70,
+  "sources": [
+    "companies",
+    "adzuna",
+    "remoteok",
+    "jobicy"
+  ]
+}

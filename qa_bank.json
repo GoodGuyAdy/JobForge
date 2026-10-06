@@ -1,0 +1,14 @@
+{
+  "the application requires an exact start date for your opentext role but your profile only lists december 2025 what day in december 2025 should i enter": {
+    "question": "The application requires an exact start date for your OpenText role, but your profile only lists “December 2025.” What day in December 2025 should I enter?",
+    "answer": "done"
+  },
+  "i still need the exact day for the required opentext start date in december 2025 what date should i enter for example december 15 2025": {
+    "question": "I still need the exact day for the required OpenText start date in December 2025. What date should I enter (for example, December 15, 2025)?",
+    "answer": "4 December 2025"
+  },
+  "do you authorize ebay to retain your information to be considered for future positions": {
+    "question": "Do you authorize eBay to retain your information to be considered for future positions?",
+    "answer": "Yes"
+  }
+}
