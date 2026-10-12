@@ -23,6 +23,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 import config
+from ats import detect as detect_ats, get_handler as get_ats_handler
 from jobfinder import db
 from store import new_run_dir, save_answer, save_result
 
@@ -217,7 +218,22 @@ def tick(sess, emit, stop, set_status) -> bool:
         page.goto(job["url"], wait_until="domcontentloaded", timeout=60000)
         _settle(page)
         navigate_adzuna_flow(page)
-        result = run_agent(sess, f"{APPLY_TASK} The job is: {label}.", hooks, run_dir)
+
+        # ── ATS detection & routing ──────────────────────────────────────
+        # Re-check the URL after Adzuna/aggregator redirect has resolved.
+        final_url = current_page(sess).url
+        ats_name = detect_ats(final_url)
+        task = f"{APPLY_TASK} The job is: {label}."
+
+        if ats_name:
+            handler = get_ats_handler(final_url)
+            emit(f"AUTOPILOT: ATS detected = {ats_name} — using deterministic handler")
+            result = handler.run(sess, hooks, run_dir, task)
+        else:
+            emit("AUTOPILOT: ATS unknown — using AI agent")
+            result = run_agent(sess, task, hooks, run_dir)
+        # ── End ATS routing ──────────────────────────────────────────────
+
         outcome = _finish(sess, job, result, asked, run_dir, hooks, emit)
     except Exception as e:
         result = {"status": "error", "summary": f"{type(e).__name__}: {e}"[:300]}

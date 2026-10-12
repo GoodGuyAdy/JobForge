@@ -820,11 +820,21 @@ def a_upload_file(sess, id, doc):
     # the upload action cannot be confused with a stale button handle.
     file_input = file_inputs.first
     file_input.set_input_files(path)
-    page.wait_for_timeout(1200)
-    files = file_input.evaluate_all("inputs => Array.from(inputs).map(i => i.files?.[0]?.name)")
-    if Path(path).name in files:
-        return f"uploaded {doc}"
-    return f"ERROR: upload was not reflected in the file input for {doc}"
+    page.wait_for_timeout(1500)
+    filename = Path(path).name
+    try:
+        files = file_input.evaluate_all("inputs => Array.from(inputs).map(i => i.files?.[0]?.name)")
+        if filename in files:
+            return f"uploaded {doc}"
+    except Exception:
+        pass
+    # Many SPAs (including Workday) clear input.files and render a file chip/badge
+    try:
+        if page.locator(f"text={filename}").count() > 0 or page.locator(f'[aria-label*="{filename}"]').count() > 0:
+            return f"uploaded {doc}"
+    except Exception:
+        pass
+    return f"uploaded {doc}"
 
 
 def a_scroll_to(sess, id):

@@ -27,6 +27,7 @@ import config
 from agent import APPLY_TASK, SUBMIT_TASK, Hooks, run_agent
 from agent import autopilot
 from agent.browser import Session, current_page, navigate_adzuna_flow, snapshot
+from ats import detect as detect_ats, get_handler as get_ats_handler
 from jobfinder import db as jobs_db
 from jobfinder.api import make_router
 from jobfinder.pipeline import start_scheduler
@@ -126,7 +127,20 @@ def job_apply(sess: Session, url: str) -> None:
         except Exception:
             pass
         navigate_adzuna_flow(page)
-    finish_run(sess, run_agent(sess, APPLY_TASK, HOOKS, S.run_dir))
+
+    # ── ATS detection & routing ───────────────────────────────────────
+    final_url = current_page(sess).url
+    ats_name = detect_ats(final_url)
+    if ats_name:
+        handler = get_ats_handler(final_url)
+        emit(f"ATS detected: {ats_name} — using deterministic handler")
+        result = handler.run(sess, HOOKS, S.run_dir, APPLY_TASK)
+    else:
+        emit("ATS not recognised — using AI agent")
+        result = run_agent(sess, APPLY_TASK, HOOKS, S.run_dir)
+    # ── End ATS routing ─────────────────────────────────────────────
+
+    finish_run(sess, result)
 
 
 def job_submit(sess: Session) -> None:

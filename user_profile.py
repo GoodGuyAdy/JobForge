@@ -1,4 +1,4 @@
-USER_PROFILE = {
+ USER_PROFILE = {
     "personal": {
         "full_name": "Aditya Narayan Dubey",
         "first_name": "Aditya",
